@@ -8,7 +8,10 @@ require_once 'conexion.php';
 
 $username = 'examen';
 $email    = 'correo@ejemplo.com';
-$password = 'password'; 
+$password_plano = 'examen123'; 
+
+
+$password = password_hash($password_plano, PASSWORD_DEFAULT);
 
 // Sentencia SQL parametrizada utilizando placeholders posicionales (?) o nombrados
 $sql = "INSERT INTO usuarios (username, email, password) VALUES (:username, :email, :password)";
