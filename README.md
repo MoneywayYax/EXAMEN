@@ -26,7 +26,7 @@ Se ha auditado la totalidad de las estructuras de control de excepciones (`try..
   * **Responsabilidad:** Persistencia DML segura, sentencias preparadas y hashing Bcrypt.
 
 * **Estudiante 3: Oficial de Seguridad**
-  * **GitHub:** yaxon parada
+  * **GitHub:** Yaxon Paradas
   * **Responsabilidad:** Control de acceso, validación de Capa 2 y manejo seguro de $_SESSION.
 
 * **Estudiante 4: Ingeniero de Interfaz / UX**
