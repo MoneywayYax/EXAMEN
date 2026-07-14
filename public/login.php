@@ -1,65 +1,53 @@
 <?php
-/**
- * Módulo de Autenticación Segura y Validación de Capa 2
- */
-
-// 1. Gestión de Sesiones Seguras (Debe llamarse antes de cualquier salida de texto)
+// login.php: Sistema de Autenticación Bicapa
 if (session_status() === PHP_SESSION_NONE) {
     session_start([
-        'cookie_lifetime' => 86400,         // Expiración de la cookie en 1 día
-        'cookie_secure'   => true,          // Solo transmite sobre HTTPS
-        'cookie_httponly' => true,          // Mitiga ataques XSS al impedir acceso vía JavaScript
-        'cookie_samesite' => 'Strict',      // Previene ataques CSRF
+        'cookie_lifetime' => 86400,
+        'cookie_secure'   => true,   // Forzar HTTPS
+        'cookie_httponly' => true,   // Mitigar XSS
+        'cookie_samesite' => 'Strict' // Mitigar CSRF
     ]);
 }
 
-require_once '../config/conexion.php';
+// Requiere el módulo PDO creado por el Estudiante 2
+require_once 'conexion.php'; 
 
-// Inicialización de variables para control de flujo
-$error_message = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-// Verificar método de petición HTTP
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    // =========================================================================
-    // VALIDACIÓN DE CAPA 2 (Re-validación estricta en el Back-end)
-    // =========================================================================
-    $input_email    = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-    $input_password = isset($_POST['password']) ? trim($_POST['password']) : '';
+    $usuario_ingresado = trim($_POST['username'] ?? '');
+    $password_ingresada = trim($_POST['password'] ?? '');
 
-    // Evaluación de vulnerabilidades por evasión de Front-end
-    if (!$input_email || empty($input_password)) {
-        $error_message = "Credenciales inválidas o formato incorrecto.";
-    } else {
-        try {
-            // Sentencia preparada para recuperar el registro por identificador único
-            $sql = "SELECT id, username, password FROM usuarios WHERE email = :email LIMIT 1";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':email' => $input_email]);
-            $user = $stmt->fetch();
+    try {
+        // Uso de sentencias preparadas (PDO) - Mitigación absoluta de SQLi
+        $sql = "SELECT id, username, password FROM usuarios WHERE username = :username LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':username' => $usuario_ingresado]);
 
-            // 2. Autenticación y Verificación de Hash
-            if ($user && password_verify($input_password, $user['password'])) {
-                // Regeneración del ID de sesión para prevenir Session Fixation (Fijación de Sesión)
-                session_regenerate_id(true);
+        $usuario_db = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // Inyección de variables de estado en la superglobal $_SESSION
-                $_SESSION['user_id']    = $user['id'];
-                $_SESSION['username']   = $user['username'];
-                $_SESSION['last_login'] = time();
+        // Validación criptográfica estricta con el hash de la BD
+        if ($usuario_db && password_verify($password_ingresada, $usuario_db['password'])) {
 
-                // Redirección segura al panel principal
-                header("Location: dashboard.php");
-                exit();
-            } else {
-                // Mensaje genérico para evitar la enumeración de usuarios
-                $error_message = "Credenciales incorrectas.";
-            }
+            // Regeneración para evitar la vulnerabilidad de Session Fixation
+            session_regenerate_id(true);
 
-        } catch (\PDOException $e) {
-            // AUDITORÍA DE SEGURIDAD: Registro interno omitiendo datos sensibles hacia el cliente
-            error_log("Fallo crítico en autenticación (Capa de datos): " . $e->getMessage());
-            $error_message = "Ocurrió un error interno en el servidor.";
+            // Inicio de sesión segura
+            $_SESSION['user_id'] = $usuario_db['id'];
+            $_SESSION['username'] = $usuario_db['username'];
+            $_SESSION['logged_in'] = true;
+
+            echo "¡Autenticación exitosa! Sesión iniciada para: " . htmlspecialchars($_SESSION['username']);
+            exit();
+
+        } else {
+            // Mensaje genérico (Prevención de ataques de enumeración de usuarios)
+            echo "Credenciales inválidas.";
         }
+
+    } catch (\PDOException $e) {
+        // Auditoría Técnica: Registro de error interno aislándolo del cliente
+        error_log("Error de BD en Autenticación: " . $e->getMessage()); 
+        echo "Error interno del servidor. Intente más tarde.";
     }
 }
+?>
