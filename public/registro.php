@@ -11,7 +11,7 @@ $email    = 'correo@ejemplo.com';
 $password_plano = 'examen123'; 
 
 
-$password = password_hash($password_plano, PASSWORD_DEFAULT);
+$password = password_hash($password_plano, PASSWORD_BCRYPT);
 
 // Sentencia SQL parametrizada utilizando placeholders posicionales (?) o nombrados
 $sql = "INSERT INTO usuarios (username, email, password) VALUES (:username, :email, :password)";
