@@ -10,11 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuarios - Capa 1</title>
     <style>
-        /* =========================================================================
-           INGENIERÍA VISUAL: CONTROL DEL MODELO DE CAJA (BOX MODEL)
-           ========================================================================= */
-        * {
-            /* Restablecimiento universal para unificar el cálculo de dimensiones */
+      
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -67,26 +63,20 @@ if (session_status() === PHP_SESSION_NONE) {
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        /* =========================================================================
-           VALIDACIÓN DE ESTADO INTERACTIVA: CAPA 1 (RETROALIMENTACIÓN INMEDIATA)
-           ========================================================================= */
         
-        /* Estado cuando el campo recibe el foco de atención */
         input:focus {
             border-color: #0366d6;
             box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.15);
         }
 
-        /* Uso coordinado de :invalid y :user-invalid para evitar la alerta roja 
-           en campos vacíos antes de que el usuario interactúe.
-        */
+       
         input:focus:invalid {
             border-color: #cb2431;
             background-color: #fff8f8;
             box-shadow: 0 0 0 3px rgba(203, 36, 49, 0.15);
         }
 
-        /* Marcado definitivo cuando el dato cumple con los patrones requeridos */
+        
         input:not(:placeholder-shown):valid {
             border-color: #28a745;
             background-color: #f6ffed;
