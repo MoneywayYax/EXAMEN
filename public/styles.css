@@ -1,0 +1,135 @@
+/* ==========================================
+   1. RESET & MODELO DE CAJA (Box Model)
+   ========================================== */
+/* Aplicamos box-sizing: border-box de manera global. 
+   Esto asegura que el padding y el border se incluyan dentro del ancho total de la caja */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ==========================================
+   2. DISEÑO DEL CONTENEDOR (Ergonomía Visual)
+   ========================================== */
+.container {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  
+  /* Uso estricto del Modelo de Caja */
+  padding: 30px;           
+  border: 1px solid #ddd;  
+  border-radius: 8px;      
+  margin: 20px;            
+  
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+  margin-bottom: 25px; 
+  text-align: center;
+}
+
+.form-header h2 {
+  color: #1a73e8;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Elementos de formulario */
+.form-group {
+  margin-bottom: 20px; 
+  position: relative;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+/* ==========================================
+   3. ESTADOS DE VALIDACIÓN (Capa 1 UX)
+   ========================================== */
+
+/* Estilo base para los inputs */
+input {
+  width: 100%;
+  padding: 12px 16px; 
+  font-size: 1rem;
+  border: 2px solid #ccc; 
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.3s ease; 
+}
+
+/* Estado de Enfoque (Focus) */
+input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.25);
+}
+
+/* --- VALIDACIÓN VISUAL INMEDIATA --- */
+
+.error-message {
+  display: none;
+  color: #d93025;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Estado Inválido */
+input:user-invalid {
+  border-color: #d93025;
+  background-color: #fce8e6;
+}
+
+input:user-invalid ~ .error-message {
+  display: block;
+}
+
+/* Estado Válido */
+input:user-valid {
+  border-color: #188038;
+  background-color: #e6f4ea;
+}
+
+/* ==========================================
+   4. BOTÓN DE ENVÍO
+   ========================================== */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #1557b0;
+}
